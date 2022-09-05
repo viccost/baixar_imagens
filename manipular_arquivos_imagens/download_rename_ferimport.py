@@ -1,4 +1,4 @@
-"""Module used to download ferimport's images from internet and also rename it """
+"""Module used to download ferimport's images from internet and also rename it, THE LINKS MUST BE IN A SPREADSHEET """
 
 import requests
 from salvar_ajustar.salvar_ajustar import gerar_dataframe, escolher_arquivo
@@ -7,7 +7,7 @@ from typing import Set
 
 
 def dowload_images(exportation: DataFrame, list_skus: Set) -> None:
-    """download images using vtex exportation spreadsheet, configure the output name"""
+    """download images using vtex exportation spreadsheet, configure the output name. Downloads all sku's image."""
     COLUMN_NAME_KEY = "_SkuId"
     COLUMN_TRANSPOSE = 'URL Imagem'
     for sku in list_skus:
