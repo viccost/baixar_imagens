@@ -1,6 +1,7 @@
 import os
 import shutil
 from time import sleep
+from salvar_ajustar.salvar_ajustar import escolher_arquivo, gerar_dataframe, escolher_pasta
 
 
 def see_files():
@@ -15,23 +16,27 @@ def see_files():
 
 
 def renomear_varios_arquivos():  # substituindo os nomes errados por novos corretos
-    """Movimenta os arquivos contidos em uma pasta e em uma lista qualquer para outra pasta com nomes corrigidos"""
+    """move files renaming them. YOU SHOULD CREATE A BACKUP FILE"""
     from time import sleep
-    folderPath = r'C:\Users\Ferimport\Desktop\1'
-    folderPathDestino = r'C:\Users\Ferimport\Desktop\2'
-    arquivosNaPasta = os.listdir(folderPath)
-    # OLD example:                                                    · list comprehension
-    # arquivosNaPasta = [nome.replace(f'{extensaoImagem}', '') for nome in arquivosNaPasta]
-    arquivosParaSeremCorrigidos = []
-    # com o auxilio do dir > list.csv teremos todos os arquivos na pasta. É necessário fornecer as correções
-    # através de um dicionário, ou outra estrutura.
-    dictCorrecoes = {}
+
+    def to_str(array: list) -> list:
+        """convert all element's list to str"""
+        array = [str(value) for value in array]
+        return array
+
+    folder_from = escolher_pasta()
+    folder_to = escolher_pasta()
+    planilha_mapa = gerar_dataframe(escolher_arquivo())
+    files_in_folder = os.listdir(folder_from)
+    nome_from = to_str(planilha_mapa['old'].tolist())
+    nome_to = to_str(planilha_mapa['new'].tolist())
+
     try:
-        for arquivoParaCorrecao in arquivosParaSeremCorrigidos:
-            if str(arquivoParaCorrecao) in arquivosNaPasta:
-                correcao = dictCorrecoes[arquivoParaCorrecao]
-                print(f"Substituindo {arquivoParaCorrecao} por {correcao}")
-                os.rename(folderPath + '\\' + f'{arquivoParaCorrecao}', folderPathDestino + '\\' + f'{correcao}')
+        for index, file in enumerate(nome_from):
+            if file in files_in_folder:
+                correcao = nome_to[index]
+                print(f"Substituindo {file} por {correcao}")
+                os.rename(folder_from + '\\' + f'{file}', folder_to + '\\' + f'{correcao}')
                 sleep(2)
     except FileNotFoundError as e:
         print(f'033[31mArquivo não encontrado:033[m {e}')
@@ -51,37 +56,13 @@ def renomear_varios_arquivos_subpastas():
             print(f"Arquivo [{fileNumber}] renomeado!")
             fileNumber += 1
 
-
-def excluirPng():
-    folderPath = r'C:\Users\Victor\Desktop\Imagens'
-    for folderName in os.listdir(folderPath):
-        for item in os.listdir(folderPath + "\\" + folderName):
-            if item.endswith(".png"):
-                os.remove(os.path.join(folderPath, folderName, item))
-                print(f'Arquivo {os.path.basename(item)} removido')
-
-
-def moverLocal():
-    folderPath = r'C:\Users\Victor\Desktop\Imagens Bosch P3 (17)'
-    folderPath_2 = r'C:\Users\Victor\Desktop\Imagens Bosch P2 (17) Movido'
-    for folderURL in os.listdir(folderPath):
-        for folder in os.listdir(folderPath + "\\" + folderURL):
-            pastaCriada = folderPath_2 + '\\' + folderURL
-            os.makedirs(pastaCriada)
-            sleep(0.8)
-            for item in os.listdir(folderPath + "\\" + folderURL + "\\" + folder):
-                shutil.move(folderPath + '\\' + folderURL + '\\' + folder + '\\' + item,
-                            pastaCriada + '\\' + item)
-                print(f"Arquivo [{item}] movido!")
-
-
 def renomearImagensComNomePasta():
     folderPath = r'C:\Users\Victor\Desktop\Imagens Bosch P3 (17) Movido 01'
     for folderName in os.listdir(folderPath):
         c = 2
         for item in os.listdir(folderPath + "\\" + folderName):
             primeiro = False
-            if item == '01.jpg' or item =='001.jpg':
+            if item == '01.jpg' or item == '001.jpg':
                 primeiro = True
                 c1 = 1
                 photoNumber = f'00{c1}'
@@ -100,6 +81,6 @@ def renomearImagensComNomePasta():
         c += 1
 
 
-renomearImagensComNomePasta()
+renomear_varios_arquivos()
 
 # será interessante tratar a extensão dos arquivos... por exemplo se houver diferentes extensões em uma pasta
