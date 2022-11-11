@@ -4,6 +4,7 @@ from salvar_ajustar.salvar_ajustar import escolher_arquivo, gerar_dataframe, sal
 from time import sleep
 from pandas import DataFrame
 
+print('É necessário uma planilha com as colunas (sku, url)')
 spreadsheet_map = SpreadSheetImagesMap(gerar_dataframe(escolher_arquivo()))
 records_to_colect = spreadsheet_map.records
 
